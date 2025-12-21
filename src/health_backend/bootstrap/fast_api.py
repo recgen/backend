@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
+from health_backend.bootstrap.config import config
 from health_backend.presentation.fast_api.ping_controller import PingController
 
 
@@ -11,8 +12,8 @@ def include_routers(app: FastAPI) -> None:
 def run() -> None:
     uvicorn.run(
         create_app(),
-        host='127.0.0.1',
-        port=6969,
+        host=config.host,
+        port=config.port,
     )
 
 
