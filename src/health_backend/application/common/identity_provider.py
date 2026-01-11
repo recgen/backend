@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
-from uuid import UUID
+
+from health_backend.domain.user.entity import User, UserId
 
 
 class IdentityProvider(ABC):
     @abstractmethod
-    async def get_current_user_id(self) -> UUID: ...
+    async def get_current_user_id(self) -> UserId: ...
+
+    @abstractmethod
+    async def get_current_user(self) -> User | None: ...
