@@ -19,16 +19,25 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: restore venv
+        uses: actions/cache/restore@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-${{ hashFiles('uv.lock') }}
+
       - name: Install uv
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.9.17"
           enable-cache: true
 
       - name: sync dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: uv sync --locked --all-extras --dev
 
       - name: cache venv
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: .venv
