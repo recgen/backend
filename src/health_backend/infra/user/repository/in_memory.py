@@ -1,4 +1,4 @@
-from health_backend.domain.user.entity import User
+from health_backend.domain.user.entity import User, UserId
 from health_backend.domain.user.repository import UserRepository
 
 
@@ -8,3 +8,13 @@ class InMemoryUserRepository(UserRepository):
 
     async def add(self, user: User) -> None:
         self._data.append(user)
+
+    async def get_by_email(self, email: str) -> User | None:
+        for user in self._data:
+            if user.email == email:
+                return user
+
+    async def get_by_id(self, id: UserId) -> User | None:
+        for user in self._data:
+            if user.id == id:
+                return user

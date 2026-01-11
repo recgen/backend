@@ -1,20 +1,16 @@
 from dataclasses import dataclass
-from uuid import UUID
 
 
 @dataclass
-class CreateDoctorInput:
+class SignUpDoctorProfileInput:
     first_name: str
     last_name: str
     email: str
-    password_hash: str
-    department_id: UUID
+    password: str
 
 
 @dataclass
-class CreateDoctorOutput:
-    user_id: UUID
+class SignUpDoctorProfileOutput:
     first_name: str
     last_name: str
     email: str
-    department_id: UUID
