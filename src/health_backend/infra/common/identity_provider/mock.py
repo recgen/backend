@@ -7,7 +7,12 @@ from health_backend.domain.user.entity import User, UserId
 
 @dataclass
 class MockIdentityProvider(IdentityProvider):
-    user: User
+    user: User | None
 
-    async def get_current_user_id(self) -> UserId:
-        return self.user.id
+    async def get_current_user_id(self) -> UserId | None:
+        if self.user:
+            return self.user.id
+        return None
+
+    async def get_current_user(self) -> User | None:
+        return self.user

@@ -18,3 +18,8 @@ class InMemoryUserRepository(UserRepository):
         for user in self._data:
             if user.id == id:
                 return user
+
+    async def update(self, user: User) -> None:
+        for old_user in self._data:
+            if old_user.id == user.id:
+                old_user, user = user, old_user

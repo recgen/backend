@@ -9,7 +9,7 @@ UserId = NewType('UserId', UUID)
 class UserStatus(StrEnum):
     ACTIVATION_PENDING = 'ACTIVATION_PENDING'
     ACTIVE = 'ACTIVE'
-    BLOCKED = 'INACTIVE'
+    INACTIVE = 'INACTIVE'
 
 
 class UserRole(StrEnum):
@@ -47,6 +47,17 @@ class User:
             roles=roles,
         )
 
+    def set_status(self, status: UserStatus) -> None:
+        self.status = status
+
+    def add_role(self, role: UserRole) -> None:
+        if not self.has_role(role):
+            self.roles.append(role)
+
+    def remove_role(self, role: UserRole) -> None:
+        if self.has_role(role):
+            self.roles.remove(role)
+
     @property
     def is_admin(self) -> bool:
         return self.has_role(UserRole.ADMIN)
@@ -56,9 +67,16 @@ class User:
         return self.has_role(UserRole.DOCTOR)
 
     @property
-    def can_create_doctors(self) -> bool:
-        return self.is_admin
+    def can_approve_doctor_sign_up(self) -> bool:
+        return self.is_admin and self.is_active
 
     def has_role(self, role: UserRole) -> bool:
         return role in self.roles
 
+    @property
+    def is_active(self) -> bool:
+        return self.status == UserStatus.ACTIVE
+
+    @property
+    def is_activation_pending(self) -> bool:
+        return self.status == UserStatus.ACTIVATION_PENDING
