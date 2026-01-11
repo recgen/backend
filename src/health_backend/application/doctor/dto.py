@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from health_backend.domain.user.entity import UserId
+
 
 @dataclass
 class SignUpDoctorProfileInput:
@@ -11,6 +13,7 @@ class SignUpDoctorProfileInput:
 
 @dataclass
 class SignUpDoctorProfileOutput:
+    user_id: UserId
     first_name: str
     last_name: str
     email: str

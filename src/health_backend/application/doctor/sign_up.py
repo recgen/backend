@@ -40,6 +40,7 @@ class DoctorSignUp:
         await self.doctor_profile_repo.add(doctor_profile)
 
         return SignUpDoctorProfileOutput(
+            user_id=user.id,
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
