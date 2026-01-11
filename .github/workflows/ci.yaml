@@ -48,11 +48,10 @@ jobs:
           path: .venv
           key: ${{ runner.os }}-${{ hashFiles('uv.lock') }}
 
-      - name: activate venv
-        run: source .venv/bin/activate
-
       - name: unit testing
-        run: pytest tests/unit
+        run: |
+          source .venv/bin/activate
+          pytest tests/unit
 
   workflow-testing:
     name: workflow testing
@@ -72,4 +71,6 @@ jobs:
         run: source .venv/bin/activate
 
       - name: workflow testing
-        run: pytest tests/workflow
+        run: |
+          source .venv/bin/activate
+          pytest tests/workflow
