@@ -1,4 +1,3 @@
-from ast import UnaryOp
 from uuid import uuid4
 
 import pytest
@@ -60,7 +59,9 @@ async def test_valid(
 
     await use_case.execute(doctor_user_id=doctor_user.id)
 
-    assert (await user_repo.get_by_id(doctor_user.id)).is_active
+    user = await user_repo.get_by_id(doctor_user.id)
+    assert user is not None
+    assert user.is_active
 
 
 @pytest.mark.asyncio
