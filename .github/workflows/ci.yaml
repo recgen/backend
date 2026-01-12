@@ -12,14 +12,6 @@ on:
       - dev
 
 jobs:
-  sync:
-    name: sync dependencies
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v6
-
-
   unit-testing:
     name: unit testing
     runs-on: ubuntu-latest
