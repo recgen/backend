@@ -1,56 +1,38 @@
-import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
-import aiohttp
-
-from health_backend.application.recommendation.dto import ThresholdsDTO
-from health_backend.application.recommendation.generator import GeneratorService
-from health_backend.domain.recommendation.entity import Recommendation
+from health_backend.adapters.recommendation.generator.common.request_builder import RequestBuilder
 
 prompt = (
-    "You're a professional medical assistant, you need to generate personalized"
-    "measuring ranges based on provider patient's history, you must be very accurate"
+    'Ты профессиональный медицинский ассистент. Ты должен генерировать'
+    'персонализированные диапазоны (пороги) на основе истории пациента.'
+    'Твои рекомендации должны быть верны с медицинской точки зрения.'
 )
 
 
-@dataclass(frozen=True, slots=True)
-class OpenRouterGeneratorService(GeneratorService):
-    api_url: str
+@dataclass(slots=True)
+class YandexGPTRequestBuilder(RequestBuilder):
+    folder: str
     model: str
     api_key: str
+    _model_uri: str = field(init=False)
 
-    async def generate(self, patient_history: str) -> ThresholdsDTO:
-        body = self.construct_request(patient_history)
-        async with aiohttp.ClientSession(
-            headers={'Authorization': f'Bearer {self.api_key}'}
-        ) as session:
-            async with session.post(self.api_url, json=body) as response:
-                # TODO: error handling
-                json_content = await response.json()
-                ranges = json.loads(json_content['choices'][0]['message']['content'])['ranges']
-                return ThresholdsDTO(
-                    systolic_blood_pressure_min=ranges['systolic_blood_pressure_min'],
-                    systolic_blood_pressure_max=ranges['systolic_blood_pressure_max'],
-                    diastolic_blood_pressure_min=ranges['diastolic_blood_pressure_min'],
-                    diastolic_blood_pressure_max=ranges['diastolic_blood_pressure_max'],
-                    temperature_celsius_min=ranges['temperature_celsius_min'],
-                    temperature_celsius_max=ranges['temperature_celsius_max'],
-                )
+    def __post_init__(self) -> None:
+        self._model_uri = f'gpt://{self.folder}/{self.model}'
 
-    def construct_request(self, patient_history: str) -> dict[str, Any]:
+    def body(self, patient_history: str) -> dict[str, Any]:
         return {
-            'model': self.model,
-            'provider': {
-                'require_parameters': True,
-            },
             'messages': [
                 {
-                    'role': 'user',
                     'content': prompt,
+                    'role': 'system',
                 },
-                {'role': 'user', 'content': patient_history},
+                {
+                    'content': patient_history,
+                    'role': 'user',
+                },
             ],
+            'model': self._model_uri,
             'response_format': {
                 'type': 'json_schema',
                 'json_schema': {
@@ -90,14 +72,6 @@ class OpenRouterGeneratorService(GeneratorService):
                                         'type': 'number',
                                         'description': 'Maximum diastolic blood pressure allowed',
                                     },
-                                    'heart_rate_min': {
-                                        'type': 'number',
-                                        'description': 'Minimum heart rate allowed',
-                                    },
-                                    'heart_rate_max': {
-                                        'type': 'number',
-                                        'description': 'Maximum heart rate allowed',
-                                    },
                                 },
                                 'required': [
                                     'systolic_blood_pressure_min',
@@ -114,4 +88,9 @@ class OpenRouterGeneratorService(GeneratorService):
                     },
                 },
             },
+        }
+
+    def headers(self) -> dict[str, Any]:
+        return {
+            'Authorization': f'Api-Key {self.api_key}',
         }
