@@ -4,9 +4,14 @@ from typing import Any
 from health_backend.adapters.recommendation.generator.common.request_builder import RequestBuilder
 
 prompt = (
-    'Ты профессиональный медицинский ассистент. Ты должен генерировать'
-    'персонализированные диапазоны (пороги) на основе истории пациента.'
-    'Твои рекомендации должны быть верны с медицинской точки зрения.'
+    'You are a professional medical assistant. You must generate personalized '
+    "critical ranges based on patient's history."
+    "Patient's history may be given either as a name of the illness or a full description."
+    "If the request does not contain patient's history or it contains swear words "
+    'then you must invalidate the request.'
+    'Respond exclusively in Russian '
+    'Never switch language. Never translate. '
+    'No additional explanations about language. '
 )
 
 
@@ -41,49 +46,61 @@ class YandexGPTRequestBuilder(RequestBuilder):
                     'schema': {
                         'type': 'object',
                         'properties': {
-                            'ranges': {
+                            'result': {
                                 'type': 'object',
-                                'properties': {
-                                    'temperature_celsius_min': {
-                                        'type': 'number',
-                                        'description': (
-                                            'Minimum allowed temperature for the patient'
-                                        ),
+                                'anyOf': [
+                                    {
+                                        'type': 'object',
+                                        'properties': {
+                                            'ranges': {
+                                                'type': 'object',
+                                                'properties': {
+                                                    'temperature_celsius_min': {'type': 'number'},
+                                                    'temperature_celsius_max': {'type': 'number'},
+                                                    'systolic_blood_pressure_min': {
+                                                        'type': 'number'
+                                                    },
+                                                    'systolic_blood_pressure_max': {
+                                                        'type': 'number'
+                                                    },
+                                                    'diastolic_blood_pressure_min': {
+                                                        'type': 'number'
+                                                    },
+                                                    'diastolic_blood_pressure_max': {
+                                                        'type': 'number'
+                                                    },
+                                                },
+                                                'required': [
+                                                    'temperature_celsius_min',
+                                                    'temperature_celsius_max',
+                                                    'systolic_blood_pressure_min',
+                                                    'systolic_blood_pressure_max',
+                                                    'diastolic_blood_pressure_min',
+                                                    'diastolic_blood_pressure_max',
+                                                ],
+                                                'additionalProperties': False,
+                                            }
+                                        },
+                                        'required': ['ranges'],
+                                        'additionalProperties': False,
                                     },
-                                    'temperature_celsius_max': {
-                                        'type': 'number',
-                                        'description': (
-                                            'Maximum allowed temperature for the patient'
-                                        ),
+                                    {
+                                        'type': 'object',
+                                        'properties': {
+                                            'error': {
+                                                'type': 'object',
+                                                'properties': {'reason': {'type': 'string'}},
+                                                'required': ['reason'],
+                                                'additionalProperties': False,
+                                            }
+                                        },
+                                        'required': ['error'],
+                                        'additionalProperties': False,
                                     },
-                                    'systolic_blood_pressure_min': {
-                                        'type': 'number',
-                                        'description': 'Minimum systolic blood pressure allowed',
-                                    },
-                                    'systolic_blood_pressure_max': {
-                                        'type': 'number',
-                                        'description': 'Maximum systolic blood pressure allowed',
-                                    },
-                                    'diastolic_blood_pressure_min': {
-                                        'type': 'number',
-                                        'description': 'Minimum diastolic blood pressure allowed',
-                                    },
-                                    'diastolic_blood_pressure_max': {
-                                        'type': 'number',
-                                        'description': 'Maximum diastolic blood pressure allowed',
-                                    },
-                                },
-                                'required': [
-                                    'systolic_blood_pressure_min',
-                                    'systolic_blood_pressure_max',
-                                    'diastolic_blood_pressure_min',
-                                    'diastolic_blood_pressure_max',
-                                    'temperature_celsius_min',
-                                    'temperature_celsius_max',
                                 ],
                             }
                         },
-                        'required': ['ranges'],
+                        'required': ['result'],
                         'additionalProperties': False,
                     },
                 },
