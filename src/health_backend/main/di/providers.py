@@ -11,7 +11,7 @@ from health_backend.adapters.recommendation.generator.yandex.response_parser imp
 from health_backend.adapters.recommendation.generator.yandex.service import (
     YandexGPTGeneratorService,
 )
-from health_backend.application.recommendation.generate import GenerateRecommendation
+from health_backend.application.recommendation.generate import GenerateRecommendationForPatient
 from health_backend.application.recommendation.generator import (
     GeneratorService,
     ThresholdsGenerator,
@@ -22,7 +22,7 @@ from health_backend.main.config import config
 class UseCaseProvider(Provider):
     scope = Scope.REQUEST
     use_cases = provide_all(
-        GenerateRecommendation,
+        GenerateRecommendationForPatient,
     )
 
 

@@ -20,10 +20,10 @@ class ThresholdsDTO:
 class RecommendationDTO:
     id: UUID
     patient_id: UUID
+    patient_history: str
     thresholds: ThresholdsDTO
 
 
 @dataclass(frozen=True, slots=True)
-class GenerateRecommendationResponse:
-    patient_history: str
+class GenerateRecommendationForPatientResponse:
     recommendation: RecommendationDTO

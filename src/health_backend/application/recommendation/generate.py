@@ -4,7 +4,7 @@ from uuid import UUID
 
 from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.recommendation.dto import (
-    GenerateRecommendationResponse,
+    GenerateRecommendationForPatientResponse,
     RecommendationDTO,
     ThresholdsDTO,
 )
@@ -17,13 +17,13 @@ from health_backend.domain.recommendation.vo import Thresholds
 
 
 @dataclass(frozen=True, slots=True)
-class GenerateRecommendation:
+class GenerateRecommendationForPatient:
     generator: ThresholdsGenerator
     # uow: UnitOfWork
 
     async def execute(
         self, patient_id: PatientId, patient_history: str
-    ) -> GenerateRecommendationResponse:
+    ) -> GenerateRecommendationForPatientResponse:
         patient_history_vo = PatientHistory(patient_history)
         thresholds_dto = await self.generator.generate(patient_history)
         recommendation = Recommendation.create(
@@ -46,11 +46,11 @@ class GenerateRecommendation:
         )
         # await self.uow.add(recommendation)
         # await self.uow.commit()
-        return GenerateRecommendationResponse(
-            patient_history=patient_history,
+        return GenerateRecommendationForPatientResponse(
             recommendation=RecommendationDTO(
                 id=recommendation.id,
                 patient_id=patient_id,
+                patient_history=patient_history,
                 thresholds=thresholds_dto,
             ),
         )
