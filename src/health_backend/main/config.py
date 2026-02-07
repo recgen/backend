@@ -7,6 +7,8 @@ class Config(BaseSettings):
     yandex_cloud_folder: str
     yandex_cloud_model: str
 
+    secret: str
+
     model_config = SettingsConfigDict(env_file='.env')
 
 
