@@ -18,6 +18,7 @@ def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
     setup_dishka(container, app)
     v1.include_routers(app)
+    v1.include_error_handlers(app)
     return app
 
 

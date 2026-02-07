@@ -11,9 +11,9 @@ class YandexGPTResponseParser(ResponseParser):
         try:
             result = json.loads(response['choices'][0]['message']['content'])['result']
         except KeyError as e:
-            raise LLMError from e
+            raise LLMError(reason='Unexpected response') from e
         if 'error' in result:
-            raise LLMError(result['error']['reason'])
+            raise LLMError(reason=result['error']['reason'])
         ranges = result['ranges']
         return ThresholdsDTO(
             systolic_blood_pressure_min=ranges['systolic_blood_pressure_min'],
