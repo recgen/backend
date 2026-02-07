@@ -20,6 +20,7 @@ from health_backend.application.common.access_token_generator import AccessToken
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.common.password_hasher import PasswordHasher
 from health_backend.application.doctor.get_me import GetMe
+from health_backend.application.doctor.login import DoctorLogin
 from health_backend.application.doctor.signup import DoctorSignup
 from health_backend.application.recommendation.generate import GenerateRecommendationForPatient
 from health_backend.application.recommendation.generator import (
@@ -35,6 +36,7 @@ class UseCaseProvider(Provider):
     use_cases = provide_all(
         GenerateRecommendationForPatient,
         DoctorSignup,
+        DoctorLogin,
         GetMe,
     )
 

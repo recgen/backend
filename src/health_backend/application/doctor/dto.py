@@ -31,3 +31,9 @@ class DoctorDTO:
 class DoctorAuthResponse:
     access_token: str
     doctor: DoctorDTO
+
+
+@dataclass(frozen=True, slots=True)
+class DoctorLoginRequest:
+    email: str
+    password: str

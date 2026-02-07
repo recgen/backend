@@ -11,6 +11,9 @@ class Config(BaseSettings):
 
     frontend_origin: str
 
+    host: str = 'localhost'
+    port: int = 8000
+
     model_config = SettingsConfigDict(env_file='.env')
 
 
