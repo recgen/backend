@@ -5,11 +5,13 @@ from fastapi.responses import JSONResponse
 from pydantic.alias_generators import to_snake
 
 from health_backend.adapters.common.errors import InfrastructureError, LLMError
+from health_backend.application.common.errors import ApplicationError, EmailAlreadyInUse
 from health_backend.domain.common.errors import DomainError, EmptyPatientHistory
 
 error_to_http_code = {
     EmptyPatientHistory: 422,
     LLMError: 422,
+    EmailAlreadyInUse: 409,
 }
 
 
@@ -40,6 +42,15 @@ def infrastructure_error_handler(request: Request, err: Exception) -> JSONRespon
             **body,
             'reason': err.reason,
         }
+    return JSONResponse(
+        body,
+        status_code=get_http_code_for(err),
+    )
+
+
+def application_error_handler(request: Request, err: Exception) -> JSONResponse:
+    assert isinstance(err, ApplicationError)
+    body = construct_body(err)
     return JSONResponse(
         body,
         status_code=get_http_code_for(err),
