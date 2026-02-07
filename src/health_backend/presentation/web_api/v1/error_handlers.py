@@ -23,7 +23,8 @@ def get_http_code_for(err: Exception) -> int:
     return error_to_http_code[err.__class__]
 
 
-def domain_error_handler(request: Request, err: DomainError) -> JSONResponse:
+def domain_error_handler(request: Request, err: Exception) -> JSONResponse:
+    assert isinstance(err, DomainError)
     body = construct_body(err)
     return JSONResponse(
         body,
@@ -31,7 +32,8 @@ def domain_error_handler(request: Request, err: DomainError) -> JSONResponse:
     )
 
 
-def infrastructure_error_handler(request: Request, err: InfrastructureError) -> JSONResponse:
+def infrastructure_error_handler(request: Request, err: Exception) -> JSONResponse:
+    assert isinstance(err, InfrastructureError)
     body = construct_body(err)
     if isinstance(err, LLMError):
         body = {
