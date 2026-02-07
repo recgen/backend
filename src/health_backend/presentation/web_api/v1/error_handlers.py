@@ -5,13 +5,20 @@ from fastapi.responses import JSONResponse
 from pydantic.alias_generators import to_snake
 
 from health_backend.adapters.common.errors import InfrastructureError, LLMError
-from health_backend.application.common.errors import ApplicationError, EmailAlreadyInUse
+from health_backend.application.common.errors import (
+    ApplicationError,
+    EmailAlreadyInUse,
+    NotFound,
+    Unauthorized,
+)
 from health_backend.domain.common.errors import DomainError, EmptyPatientHistory
 
 error_to_http_code = {
     EmptyPatientHistory: 422,
     LLMError: 422,
     EmailAlreadyInUse: 409,
+    Unauthorized: 401,
+    NotFound: 404,
 }
 
 

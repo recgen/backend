@@ -3,10 +3,11 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Response
 
 from health_backend.application.doctor.dto import (
+    DoctorAuthResponse,
     DoctorDTO,
     DoctorSignupRequest,
-    DoctorSignupResponse,
 )
+from health_backend.application.doctor.get_me import GetMe
 from health_backend.application.doctor.signup import DoctorSignup
 
 router = APIRouter(
@@ -25,3 +26,8 @@ async def signup(
     result = await use_case.execute(request)
     response.set_cookie(key='access_token', value=result.access_token)
     return result.doctor
+
+
+@router.get('/me')
+async def get_me(use_case: FromDishka[GetMe]) -> DoctorDTO:
+    return await use_case.execute()

@@ -28,6 +28,6 @@ class DoctorDTO:
 
 
 @dataclass(frozen=True, slots=True)
-class DoctorSignupResponse:
+class DoctorAuthResponse:
     access_token: str
     doctor: DoctorDTO

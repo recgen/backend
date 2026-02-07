@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 
-from health_backend.main.config import config
 import uvicorn
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
+from health_backend.main.config import config
 from health_backend.main.di import container
 from health_backend.presentation.web_api import v1
 
@@ -20,9 +20,7 @@ def create_app() -> FastAPI:
     setup_dishka(container, app)
     v1.include_routers(app)
     v1.include_error_handlers(app)
-    v1.add_cors_middleware(app, [
-        config.frontend_origin
-    ])
+    v1.add_cors_middleware(app, [config.frontend_origin])
     return app
 
 

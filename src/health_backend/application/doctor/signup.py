@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from health_backend.application.common.access_token_generator import AccessTokenGenerator
 from health_backend.application.common.password_hasher import PasswordHasher
 from health_backend.application.doctor.dto import (
+    DoctorAuthResponse,
     DoctorDTO,
     DoctorSignupRequest,
-    DoctorSignupResponse,
 )
 from health_backend.domain.doctor.entity import Doctor
 from health_backend.domain.doctor.repository import DoctorRepository
@@ -17,7 +17,7 @@ class DoctorSignup:
     password_hasher: PasswordHasher
     access_token_generator: AccessTokenGenerator
 
-    async def execute(self, request: DoctorSignupRequest) -> DoctorSignupResponse:
+    async def execute(self, request: DoctorSignupRequest) -> DoctorAuthResponse:
         doctor = Doctor.create(
             name=request.name,
             email=request.email,
@@ -28,7 +28,7 @@ class DoctorSignup:
             doctor_id=doctor.id,
             expire_in=(60 * 60 * 24 * 30),  # thirty days
         )
-        return DoctorSignupResponse(
+        return DoctorAuthResponse(
             access_token=token.value,
             doctor=DoctorDTO.from_entity(doctor),
         )
