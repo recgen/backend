@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from health_backend.adapters.common.errors import InfrastructureError
 from health_backend.application.common.errors import ApplicationError
@@ -20,3 +21,13 @@ def include_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(DomainError, domain_error_handler)
     app.add_exception_handler(InfrastructureError, infrastructure_error_handler)
     app.add_exception_handler(ApplicationError, application_error_handler)
+
+
+def add_cors_middleware(app: FastAPI, origins: list[str]) -> None:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*'],
+    )
