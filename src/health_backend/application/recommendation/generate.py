@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
+from health_backend.application.common.errors import Unauthorized
+from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.recommendation.dto import (
     GenerateRecommendationForPatientResponse,
@@ -19,11 +21,15 @@ from health_backend.domain.recommendation.vo import Thresholds
 @dataclass(frozen=True, slots=True)
 class GenerateRecommendationForPatient:
     generator: ThresholdsGenerator
-    # uow: UnitOfWork
+    idp: DoctorIdProvider
+    uow: UnitOfWork
 
     async def execute(
         self, patient_id: PatientId, patient_history: str
     ) -> GenerateRecommendationForPatientResponse:
+        doctor_id = self.idp.get_id()
+        if doctor_id is None:
+            raise Unauthorized
         patient_history_vo = PatientHistory(patient_history)
         thresholds_dto = await self.generator.generate(patient_history)
         recommendation = Recommendation.create(
@@ -44,8 +50,8 @@ class GenerateRecommendationForPatient:
                 ),
             ),
         )
-        # await self.uow.add(recommendation)
-        # await self.uow.commit()
+        self.uow.add(recommendation)
+        await self.uow.commit()
         return GenerateRecommendationForPatientResponse(
             recommendation=RecommendationDTO(
                 id=recommendation.id,

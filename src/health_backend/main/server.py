@@ -4,6 +4,7 @@ import uvicorn
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
+from health_backend.adapters.persistence.db import start_all_mappings
 from health_backend.main.config import config
 from health_backend.main.di import container
 from health_backend.presentation.web_api import v1
@@ -11,6 +12,7 @@ from health_backend.presentation.web_api import v1
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    start_all_mappings()
     yield
     await app.state.dishka_container.close()
 

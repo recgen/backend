@@ -1,11 +1,24 @@
+from typing import AsyncIterator
+
 from dishka import Provider, Scope, provide, provide_all
 from fastapi import Request
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from health_backend.adapters.common.access_token_generator import JWTGenerator
 from health_backend.adapters.common.http.aiohttp import AioHttpClient
 from health_backend.adapters.common.http.client import HttpClient
 from health_backend.adapters.common.idp import JWTIdProvider, JWTParser
 from health_backend.adapters.common.password_hasher import ArgonPasswordHasher
+from health_backend.adapters.persistence.db.doctor.repository import SADoctorRepository
+from health_backend.adapters.persistence.db.patient.repository import SAPatientRepository
+from health_backend.adapters.persistence.db.recommendation.repository import (
+    SARecommendationRepository,
+)
 from health_backend.adapters.persistence.in_memory.doctor.repository import InMemoryDoctorRepository
 from health_backend.adapters.recommendation.generator.yandex.request_builder import (
     YandexGPTRequestBuilder,
@@ -19,15 +32,21 @@ from health_backend.adapters.recommendation.generator.yandex.service import (
 from health_backend.application.common.access_token_generator import AccessTokenGenerator
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.common.password_hasher import PasswordHasher
+from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.doctor.get_me import GetMe
 from health_backend.application.doctor.login import DoctorLogin
 from health_backend.application.doctor.signup import DoctorSignup
+from health_backend.application.patient.create import CreatePatient
+from health_backend.application.patient.get import GetPaginatedPatients, GetPatient
 from health_backend.application.recommendation.generate import GenerateRecommendationForPatient
 from health_backend.application.recommendation.generator import (
     GeneratorService,
     ThresholdsGenerator,
 )
+from health_backend.application.recommendation.get import GetPaginatedRecommendationsForPatient
 from health_backend.domain.doctor.repository import DoctorRepository
+from health_backend.domain.patient.repository import PatientRepository
+from health_backend.domain.recommendation.repository import RecommendationRepository
 from health_backend.main.config import config
 
 
@@ -38,11 +57,39 @@ class UseCaseProvider(Provider):
         DoctorSignup,
         DoctorLogin,
         GetMe,
+        CreatePatient,
+        GetPaginatedPatients,
+        GetPaginatedRecommendationsForPatient,
+        GetPatient,
     )
 
 
-class UOWProvider:
-    scope = Scope.REQUEST
+class DBProvider(Provider):
+    @provide(scope=Scope.APP)
+    def get_engine(self) -> AsyncEngine:
+        return create_async_engine(url=config.db_url)
+
+    @provide(scope=Scope.APP)
+    def get_session_maker(self, engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
+        session_maker = async_sessionmaker(bind=engine, expire_on_commit=False, autoflush=False)
+        return session_maker
+
+    @provide(scope=Scope.REQUEST)
+    async def get_session(
+        self, session_maker: async_sessionmaker[AsyncSession]
+    ) -> AsyncIterator[AsyncSession]:
+        session = session_maker()
+        try:
+            yield session
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+
+    @provide(scope=Scope.REQUEST)
+    async def get_uow(self, session: AsyncSession) -> UnitOfWork:
+        return session
 
 
 class GeneratorProvider(Provider):
@@ -107,6 +154,16 @@ class AuthProvider(Provider):
 
 
 class RepoProvider(Provider):
-    @provide(scope=Scope.APP)
-    def get_doctor_repo(self) -> DoctorRepository:
-        return InMemoryDoctorRepository()
+    scope = Scope.REQUEST
+
+    @provide
+    def get_doctor_repo(self, session: AsyncSession) -> DoctorRepository:
+        return SADoctorRepository(session)
+
+    @provide
+    def get_patient_repo(self, session: AsyncSession) -> PatientRepository:
+        return SAPatientRepository(session)
+
+    @provide
+    def get_recommendation_repo(self, session: AsyncSession) -> RecommendationRepository:
+        return SARecommendationRepository(session)

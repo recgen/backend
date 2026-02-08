@@ -9,12 +9,13 @@ from health_backend.presentation.web_api.v1.error_handlers import (
     domain_error_handler,
     infrastructure_error_handler,
 )
-from health_backend.presentation.web_api.v1.routes import auth, recommendation
+from health_backend.presentation.web_api.v1.routes import auth, patient, recommendation
 
 
 def include_routers(app: FastAPI) -> None:
     app.include_router(recommendation.router)
     app.include_router(auth.router)
+    app.include_router(patient.router)
 
 
 def include_error_handlers(app: FastAPI) -> None:

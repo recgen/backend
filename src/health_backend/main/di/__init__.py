@@ -3,6 +3,7 @@ from dishka.integrations.fastapi import FastapiProvider
 
 from health_backend.main.di.providers import (
     AuthProvider,
+    DBProvider,
     GeneratorProvider,
     RepoProvider,
     UseCaseProvider,
@@ -14,4 +15,5 @@ container = make_async_container(
     GeneratorProvider(),
     AuthProvider(),
     RepoProvider(),
+    DBProvider(),
 )

@@ -1,7 +1,10 @@
-from typing import Any, Protocol
+from abc import abstractmethod
+from typing import Protocol
 
 
 class UnitOfWork(Protocol):
-    async def add(self, entity: Any) -> None: ...
+    @abstractmethod
+    def add(self, instance: object) -> None: ...
 
+    @abstractmethod
     async def commit(self) -> None: ...

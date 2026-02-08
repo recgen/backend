@@ -2,10 +2,12 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Self
 
+from attr import frozen
+
 from health_backend.domain.common.errors import EmptyEmail, EmptyName
 
 
-@dataclass(frozen=True, slots=True)
+@frozen
 class Range:
     minimum: Decimal
     maximum: Decimal
@@ -18,7 +20,7 @@ class Range:
         return cls(minimum=Decimal(minimum), maximum=Decimal(maximum))
 
 
-@dataclass(frozen=True, slots=True)
+@frozen
 class Name:
     value: str
 
@@ -27,7 +29,7 @@ class Name:
             raise EmptyName
 
 
-@dataclass(frozen=True, slots=True)
+@frozen
 class Email:
     value: str
 
