@@ -28,4 +28,6 @@ def main() -> None:
     app = create_app()
     uvicorn.run(
         app,
+        host=config.host,
+        port=config.port,
     )
