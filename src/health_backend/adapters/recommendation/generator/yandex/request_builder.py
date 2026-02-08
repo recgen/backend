@@ -12,6 +12,7 @@ prompt = (
     'Respond exclusively in Russian '
     'Never switch language. Never translate. '
     'No additional explanations about language. '
+    'Reply about errors in a very short manner '
 )
 
 

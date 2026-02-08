@@ -7,7 +7,7 @@ from health_backend.domain.common.vo import Name
 PatientId = NewType('PatientId', UUID)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass
 class Patient:
     id: PatientId
     name: Name

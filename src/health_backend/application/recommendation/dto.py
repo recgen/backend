@@ -20,9 +20,9 @@ class ThresholdsDTO:
     def from_vo(cls, thresholds: Thresholds) -> Self:
         return cls(
             systolic_blood_pressure_min=int(thresholds.systolic_blood_pressure.minimum),
-            systolic_blood_pressure_max=int(thresholds.systolic_blood_pressure.minimum),
+            systolic_blood_pressure_max=int(thresholds.systolic_blood_pressure.maximum),
             diastolic_blood_pressure_min=int(thresholds.diastolic_blood_pressure.minimum),
-            diastolic_blood_pressure_max=int(thresholds.diastolic_blood_pressure.minimum),
+            diastolic_blood_pressure_max=int(thresholds.diastolic_blood_pressure.maximum),
             temperature_celsius_min=float(thresholds.temperature_celsius.minimum),
             temperature_celsius_max=float(thresholds.temperature_celsius.maximum),
         )

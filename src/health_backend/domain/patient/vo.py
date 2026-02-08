@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from attr import frozen
 
 from health_backend.domain.common.errors import EmptyPatientHistory
 
 
-@dataclass(frozen=True, slots=True)
+@frozen()
 class PatientHistory:
     value: str
 

@@ -9,7 +9,7 @@ from health_backend.domain.recommendation.vo import Thresholds
 RecommendationId = NewType('RecommendationId', UUID)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass
 class Recommendation:
     id: RecommendationId
     patient_id: PatientId

@@ -27,7 +27,7 @@ async def create_patient(
 
 
 @router.get('/')
-async def create_patient(
+async def get_paginated(
     use_case: FromDishka[GetPaginatedPatients],
     page: int = 1,
     size: int = 20,

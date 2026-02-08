@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
-from health_backend.application.common.errors import Unauthorized
+from health_backend.application.common.errors import NotFound, Unauthorized
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.recommendation.dto import (
@@ -13,6 +13,7 @@ from health_backend.application.recommendation.dto import (
 from health_backend.application.recommendation.generator import ThresholdsGenerator
 from health_backend.domain.common.vo import Range
 from health_backend.domain.patient.entity import PatientId
+from health_backend.domain.patient.repository import PatientRepository
 from health_backend.domain.patient.vo import PatientHistory
 from health_backend.domain.recommendation.entity import Recommendation
 from health_backend.domain.recommendation.vo import Thresholds
@@ -21,6 +22,7 @@ from health_backend.domain.recommendation.vo import Thresholds
 @dataclass(frozen=True, slots=True)
 class GenerateRecommendationForPatient:
     generator: ThresholdsGenerator
+    patient_repo: PatientRepository
     idp: DoctorIdProvider
     uow: UnitOfWork
 
@@ -31,6 +33,9 @@ class GenerateRecommendationForPatient:
         if doctor_id is None:
             raise Unauthorized
         patient_history_vo = PatientHistory(patient_history)
+        patient = await self.patient_repo.get_by_id(patient_id)
+        if patient is None:
+            raise NotFound
         thresholds_dto = await self.generator.generate(patient_history)
         recommendation = Recommendation.create(
             patient_id,

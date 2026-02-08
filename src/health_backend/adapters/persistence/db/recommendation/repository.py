@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from health_backend.domain.patient.entity import PatientId
 from health_backend.domain.recommendation.entity import Recommendation
 from health_backend.domain.recommendation.repository import RecommendationRepository
 
@@ -11,9 +12,12 @@ from health_backend.domain.recommendation.repository import RecommendationReposi
 class SARecommendationRepository(RecommendationRepository):
     session: AsyncSession
 
-    async def get_paginated(self, page: int, size: int) -> tuple[list[Recommendation], int]:
+    async def get_paginated(
+        self, patient_id: PatientId, page: int, size: int
+    ) -> tuple[list[Recommendation], int]:
         q = (
             select(Recommendation, func.count().over().label('total'))
+            .where(Recommendation.patient_id == patient_id)  # ty: ignore
             .offset((page - 1) * size)
             .limit(size)
         )

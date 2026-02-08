@@ -26,7 +26,9 @@ class GetPaginatedRecommendationsForPatient:
         patient = await self.patient_repo.get_by_id(patient_id)
         if patient is None:
             raise NotFound
-        recommendations, total = await self.recommendation_repo.get_paginated(page, size)
+        recommendations, total = await self.recommendation_repo.get_paginated(
+            patient_id, page, size
+        )
         return PaginatedRecommendationsResponse(
             recommendations=[RecommendationDTO.from_entity(rec) for rec in recommendations],
             page=page,
