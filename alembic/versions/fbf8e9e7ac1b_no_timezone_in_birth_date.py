@@ -1,8 +1,8 @@
-"""use typeadapter nametype in patient table
+"""no timezone in birth_date
 
-Revision ID: 9ee337212b32
-Revises: ca7fd045ee76
-Create Date: 2026-02-09 00:02:10.969783
+Revision ID: fbf8e9e7ac1b
+Revises: ff67be46e448
+Create Date: 2026-02-09 22:33:32.486345
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = '9ee337212b32'
-down_revision: Union[str, Sequence[str], None] = 'ca7fd045ee76'
+revision: str = 'fbf8e9e7ac1b'
+down_revision: Union[str, Sequence[str], None] = 'ff67be46e448'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
