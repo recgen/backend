@@ -37,6 +37,7 @@ from health_backend.application.doctor.get_me import GetMe
 from health_backend.application.doctor.login import DoctorLogin
 from health_backend.application.doctor.signup import DoctorSignup
 from health_backend.application.patient.create import CreatePatient
+from health_backend.application.patient.delete import DeletePatient
 from health_backend.application.patient.get import GetPaginatedPatients, GetPatient
 from health_backend.application.recommendation.generate import GenerateRecommendationForPatient
 from health_backend.application.recommendation.generator import (
@@ -61,6 +62,7 @@ class UseCaseProvider(Provider):
         GetPaginatedPatients,
         GetPaginatedRecommendationsForPatient,
         GetPatient,
+        DeletePatient,
     )
 
 

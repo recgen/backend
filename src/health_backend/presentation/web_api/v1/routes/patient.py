@@ -3,6 +3,7 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 
 from health_backend.application.patient.create import CreatePatient
+from health_backend.application.patient.delete import DeletePatient
 from health_backend.application.patient.dto import (
     CreatePatientRequest,
     CreatePatientResponse,
@@ -19,7 +20,7 @@ router = APIRouter(
 )
 
 
-@router.post('/')
+@router.post('/', status_code=201)
 async def create_patient(
     request: CreatePatientRequest, use_case: FromDishka[CreatePatient]
 ) -> CreatePatientResponse:
@@ -33,3 +34,11 @@ async def get_paginated(
     size: int = 20,
 ) -> PaginatedPatientsResponse:
     return await use_case.execute(page, size)
+
+
+@router.delete('/{id}', status_code=204)
+async def delete(
+    use_case: FromDishka[DeletePatient],
+    id: PatientId,
+) -> None:
+    await use_case.execute(id)

@@ -15,9 +15,10 @@ class SAPatientRepository(PatientRepository):
         q = select(Patient).where(Patient.id == id)  # ty: ignore[invalid-argument-type]
         return await self.session.scalar(q)
 
-    async def get_paginated(self, page: int, size: int) -> tuple[list[Patient], int]:
+    async def get_active_paginated(self, page: int, size: int) -> tuple[list[Patient], int]:
         q = (
             select(Patient, func.count().over().label('total'))
+            .where(Patient.is_active)  # ty: ignore[invalid-argument-type]
             .offset((page - 1) * size)
             .limit(size)
         )

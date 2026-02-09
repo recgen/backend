@@ -3,7 +3,7 @@ from attr import frozen
 from health_backend.domain.common.errors import EmptyPatientHistory
 
 
-@frozen()
+@frozen
 class PatientHistory:
     value: str
 

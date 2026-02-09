@@ -31,7 +31,7 @@ class GetPaginatedPatients:
         doctor_id = self.idp.get_id()
         if doctor_id is None:
             raise Unauthorized
-        patients, total = await self.repo.get_paginated(page, size)
+        patients, total = await self.repo.get_active_paginated(page, size)
         return PaginatedPatientsResponse(
             patients=[PatientDTO.from_entity(p) for p in patients],
             page=page,

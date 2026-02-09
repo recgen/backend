@@ -18,6 +18,8 @@ class CreatePatient:
             raise Unauthorized
         patient = Patient.create(
             name=request.name,
+            birth_date=request.birth_date,
+            gender=request.gender,
         )
         self.uow.add(patient)
         await self.uow.commit()

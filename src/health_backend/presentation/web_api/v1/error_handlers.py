@@ -11,7 +11,7 @@ from health_backend.application.common.errors import (
     NotFound,
     Unauthorized,
 )
-from health_backend.domain.common.errors import DomainError, EmptyPatientHistory
+from health_backend.domain.common.errors import DomainError, EmptyPatientHistory, Inactive
 
 error_to_http_code = {
     EmptyPatientHistory: 422,
@@ -19,6 +19,7 @@ error_to_http_code = {
     EmailAlreadyInUse: 409,
     Unauthorized: 401,
     NotFound: 404,
+    Inactive: 403,
 }
 
 

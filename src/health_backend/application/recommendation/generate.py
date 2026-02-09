@@ -11,6 +11,7 @@ from health_backend.application.recommendation.dto import (
     ThresholdsDTO,
 )
 from health_backend.application.recommendation.generator import ThresholdsGenerator
+from health_backend.domain.common.errors import Inactive
 from health_backend.domain.common.vo import Range
 from health_backend.domain.patient.entity import PatientId
 from health_backend.domain.patient.repository import PatientRepository
@@ -36,6 +37,8 @@ class GenerateRecommendationForPatient:
         patient = await self.patient_repo.get_by_id(patient_id)
         if patient is None:
             raise NotFound
+        if patient.is_active is False:
+            raise Inactive
         thresholds_dto = await self.generator.generate(patient_history)
         recommendation = Recommendation.create(
             patient_id,

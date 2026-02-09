@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from decimal import Decimal
+from enum import StrEnum
 from typing import Self
 
 from attr import frozen
@@ -37,3 +38,8 @@ class Email:
         if len(self.value) == 0:
             raise EmptyEmail
         # TODO: validation
+
+
+class Gender(StrEnum):
+    MALE = 'MALE'
+    FEMALE = 'FEMALE'

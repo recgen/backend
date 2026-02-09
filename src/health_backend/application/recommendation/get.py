@@ -6,6 +6,7 @@ from health_backend.application.recommendation.dto import (
     PaginatedRecommendationsResponse,
     RecommendationDTO,
 )
+from health_backend.domain.common.errors import Inactive
 from health_backend.domain.patient.entity import PatientId
 from health_backend.domain.patient.repository import PatientRepository
 from health_backend.domain.recommendation.repository import RecommendationRepository
@@ -26,6 +27,8 @@ class GetPaginatedRecommendationsForPatient:
         patient = await self.patient_repo.get_by_id(patient_id)
         if patient is None:
             raise NotFound
+        if patient.is_active is False:
+            raise Inactive
         recommendations, total = await self.recommendation_repo.get_paginated(
             patient_id, page, size
         )
