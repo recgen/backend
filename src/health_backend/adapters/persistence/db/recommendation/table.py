@@ -1,7 +1,6 @@
 import json
 from decimal import Decimal
 
-from attrs import asdict
 from sqlalchemy import Column, ForeignKey, String, Table, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import TypeDecorator
@@ -17,14 +16,14 @@ class PatientHistoryType(TypeDecorator):
     impl = Text
     cache_ok = True
 
-    def process_bind_param(self, value: PatientHistory | None, dialect) -> str | None:
-        if value is not None:
-            return json.dumps(asdict(value))
+    def process_bind_param(self, patient_history: PatientHistory | None, dialect) -> str | None:
+        if patient_history is not None:
+            return patient_history.value
         return None
 
     def process_result_value(self, value: str | None, dialect) -> PatientHistory | None:
         if value is not None:
-            return PatientHistory(**json.loads(value))
+            return PatientHistory(value)
         return None
 
 
@@ -32,22 +31,22 @@ class ThresholdsType(TypeDecorator):
     impl = String
     cache_ok = True
 
-    def process_bind_param(self, value: Thresholds | None, dialect) -> str | None:
-        if value is None:
+    def process_bind_param(self, thresholds: Thresholds | None, dialect) -> str | None:
+        if thresholds is None:
             return None
         return json.dumps(
             {
                 'systolic_blood_pressure': {
-                    'minimum': str(value.systolic_blood_pressure.minimum),
-                    'maximum': str(value.systolic_blood_pressure.maximum),
+                    'minimum': str(thresholds.systolic_blood_pressure.minimum),
+                    'maximum': str(thresholds.systolic_blood_pressure.maximum),
                 },
                 'diastolic_blood_pressure': {
-                    'minimum': str(value.diastolic_blood_pressure.minimum),
-                    'maximum': str(value.diastolic_blood_pressure.maximum),
+                    'minimum': str(thresholds.diastolic_blood_pressure.minimum),
+                    'maximum': str(thresholds.diastolic_blood_pressure.maximum),
                 },
                 'temperature_celsius': {
-                    'minimum': str(value.temperature_celsius.minimum),
-                    'maximum': str(value.temperature_celsius.maximum),
+                    'minimum': str(thresholds.temperature_celsius.minimum),
+                    'maximum': str(thresholds.temperature_celsius.maximum),
                 },
             }
         )
