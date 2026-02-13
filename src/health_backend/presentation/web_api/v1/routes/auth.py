@@ -26,7 +26,12 @@ async def signup(
     use_case: FromDishka[DoctorSignup],
 ) -> DoctorDTO:
     result = await use_case.execute(request)
-    response.set_cookie(key='access_token', value=result.access_token)
+    response.set_cookie(
+        key='access_token',
+        value=result.access_token,
+        httponly=True,
+        secure=True,
+    )
     return result.doctor
 
 
@@ -45,6 +50,8 @@ async def login(
     response.set_cookie(
         'access_token',
         result.access_token,
+        httponly=True,
+        secure=True,
     )
     return result.doctor
 
