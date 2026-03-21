@@ -47,7 +47,7 @@ jobs:
           echo ${{ secrets.CR_PAT }} | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
       - name: Push to registry
         run: |
-          IMAGE_ID=$REGISTRY/${{ github.repository_owner }}
+          IMAGE_ID=$REGISTRY/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
           VERSION=${{ github.sha }}
           docker tag ${{ vars.IMAGE_NAME }} $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
