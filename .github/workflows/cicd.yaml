@@ -16,34 +16,34 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v6
-        - name: Install uv
-          uses: astral-sh/setup-uv@v7
-        - name: Run unit tests
-          run: |
-            uv sync --all-groups
-            uv run pytest ./tests/unit
-        - name: Run end-to-end tests
-          run: |
-            uv sync --all-groups
-          uv run pytest ./tests/e2e
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Run unit tests
+        run: |
+          uv sync --all-groups
+          uv run pytest ./tests/unit
+      - name: Run end-to-end tests
+        run: |
+          uv sync --all-groups
+        uv run pytest ./tests/e2e
 
   push:
     name: Build and push docker image to registry
     needs: [lint, test]
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v6
-        - name: Build Docker image
-          run: |
-            docker build . --file Dockerfile --tag $IMAGE_NAME
-        - name: Login to registry
-          run: |
-            echo $CR_PAT | docker login -u {{ github.actor }} --password-stdin
-        - name: Push to registry
-          run: |
-            IMAGE_ID = ghcr.io/{{ github.repository_owner }}
-            VERSION = {{ github.sha }}
-            docker tag $IMAGE_NAME $IMAGE_ID/$IMAGE_NAME:$VERSION
-            docker push $IMAGE_ID/$IMAGE_NAME:
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build Docker image
+        run: |
+          docker build . --file Dockerfile --tag $IMAGE_NAME
+      - name: Login to registry
+        run: |
+          echo $CR_PAT | docker login -u {{ github.actor }} --password-stdin
+      - name: Push to registry
+        run: |
+          IMAGE_ID = ghcr.io/{{ github.repository_owner }}
+          VERSION = {{ github.sha }}
+          docker tag $IMAGE_NAME $IMAGE_ID/$IMAGE_NAME:$VERSION
+          docker push $IMAGE_ID/$IMAGE_NAME:
