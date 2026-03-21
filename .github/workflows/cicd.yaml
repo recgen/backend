@@ -1,0 +1,14 @@
+name: CI/CD
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Lint
+        run: |
+          uv sync --all-groups
+          uv run ruff check
+          uv run ty check
