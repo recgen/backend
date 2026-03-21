@@ -1,6 +1,9 @@
 name: CI/CD
 on: [push]
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -33,6 +36,7 @@ jobs:
     name: Build and push docker image to registry
     needs: [lint, test]
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v6
       - name: Build Docker image
@@ -46,4 +50,4 @@ jobs:
           IMAGE_ID=$REGISTRY/${{ github.repository_owner }}
           VERSION=${{ github.sha }}
           docker tag ${{ vars.IMAGE_NAME }} $IMAGE_ID/${{ vars.IMAGE_NAME }}:$VERSION
-          docker push $IMAGE_ID/${{ vars.IMAGE_NAME }}:
+          docker push ${{ vars.IMAGE_NAME }}:$VERSION
