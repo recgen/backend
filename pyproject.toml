@@ -51,3 +51,8 @@ select = [
   "E",
   "I",
 ]
+
+[tool.ty.src]
+exclude = [
+  "./alembic",
+]
