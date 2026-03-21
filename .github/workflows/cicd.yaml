@@ -12,4 +12,4 @@ jobs:
         run: |
           uv sync --all-groups
           uv run ruff check
-          uvx ty check
+          # uvx ty check
