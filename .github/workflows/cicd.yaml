@@ -1,6 +1,10 @@
 name: CI/CD
 on: [push]
 
+env:
+  IMAGE_NAME: {{ secrets.IMAGE_NAME }}
+  CR_PAT: {{ secrets.CR_PAT }}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
