@@ -44,6 +44,8 @@ jobs:
         run: |
           echo $IMAGE_NAME
           echo $CR_PAT
+          echo ${{ vars.IMAGE_NAME }}
+          echo ${{ secrets.CR_PAT }}
       - name: Build Docker image
         run: |
           docker build . --file Dockerfile --tag $IMAGE_NAME
