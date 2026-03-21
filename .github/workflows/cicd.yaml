@@ -2,8 +2,9 @@ name: CI/CD
 on: [push]
 
 env:
-  IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+  IMAGE_NAME: ${{ vars.IMAGE_NAME }}
   CR_PAT: ${{ secrets.CR_PAT }}
+  REGISTRY: ghcr.io
 
 jobs:
   lint:
@@ -48,10 +49,10 @@ jobs:
           docker build . --file Dockerfile --tag $IMAGE_NAME
       - name: Login to registry
         run: |
-          echo $CR_PAT | docker login -u ${{ github.actor }} --password-stdin
+          echo $CR_PAT | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
       - name: Push to registry
         run: |
-          IMAGE_ID = ghcr.io/${{ github.repository_owner }}
-          VERSION = ${{ github.sha }}
+          IMAGE_ID=$REGISTRY/${{ github.repository_owner }}
+          VERSION=${{ github.sha }}
           docker tag $IMAGE_NAME $IMAGE_ID/$IMAGE_NAME:$VERSION
           docker push $IMAGE_ID/$IMAGE_NAME:
