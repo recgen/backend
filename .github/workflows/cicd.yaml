@@ -27,7 +27,7 @@ jobs:
       - name: Run end-to-end tests
         run: |
           uv sync --all-groups
-        uv run pytest ./tests/e2e
+          uv run pytest ./tests/e2e
 
   push:
     name: Build and push docker image to registry
