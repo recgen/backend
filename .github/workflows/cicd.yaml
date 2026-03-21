@@ -39,6 +39,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Check env variables
+        run: |
+          echo $IMAGE_NAME
+          echo $CR_PAT
       - name: Build Docker image
         run: |
           docker build . --file Dockerfile --tag $IMAGE_NAME
