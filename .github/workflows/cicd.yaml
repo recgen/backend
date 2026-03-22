@@ -58,4 +58,5 @@ jobs:
       - name: Repository dispatch
         uses: peter-evans/repository-dispatch@v4
         with:
+          repository: ${{ vars.ORGANIZATION }}/${{ vars.DEPLOY_REPO }}
           event-type: backend-image-update
