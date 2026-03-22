@@ -26,10 +26,6 @@ def create_app() -> FastAPI:
     return app
 
 
-def main() -> None:
+def main() -> FastAPI:
     app = create_app()
-    uvicorn.run(
-        app,
-        host=config.host,
-        port=config.port,
-    )
+    return app
