@@ -59,4 +59,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v4
         with:
           repository: ${{ vars.ORGANIZATION }}/${{ vars.DEPLOY_REPO }}
+          token: ${{ secrets.DISPATCH_PAT}}
           event-type: backend-image-update
