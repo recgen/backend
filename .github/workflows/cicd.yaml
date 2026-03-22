@@ -53,3 +53,7 @@ jobs:
           docker tag ${{ vars.IMAGE_NAME }} $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
+      - name: Repository dispatch
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          event-type: backend-image-update
