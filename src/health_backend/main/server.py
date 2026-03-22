@@ -6,7 +6,7 @@ from fastapi import FastAPI
 
 from health_backend.adapters.persistence.db import start_all_mappings
 from health_backend.main.config import config
-from health_backend.main.di import container
+from health_backend.main.di import make_http_container
 from health_backend.presentation.web_api import v1
 
 
@@ -19,6 +19,7 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
+    container = make_http_container()
     setup_dishka(container, app)
     v1.include_routers(app)
     v1.include_error_handlers(app)
@@ -26,10 +27,6 @@ def create_app() -> FastAPI:
     return app
 
 
-def main() -> None:
+def main() -> FastAPI:
     app = create_app()
-    uvicorn.run(
-        app,
-        host=config.host,
-        port=config.port,
-    )
+    return app
