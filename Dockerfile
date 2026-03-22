@@ -23,4 +23,4 @@ USER $USER
 
 ENV UV_NO_SYNC=1
 
-CMD uv run api
+CMD uv run alembic upgrade head && uv run api
