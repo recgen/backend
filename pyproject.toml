@@ -24,7 +24,7 @@ authors = [
 ]
 
 [project.scripts]
-health = "health_backend.presentation.cli.entrypoint:cli"
+health = "health_backend.main.cli:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.17,<0.10.0"]
