@@ -4,6 +4,7 @@ from dishka.integrations.fastapi import FastapiProvider
 from health_backend.main.di.providers import (
     AlembicConfigProvider,
     AuthProvider,
+    ConfigProvider,
     DBProvider,
     GeneratorProvider,
     RepoProvider,
@@ -19,6 +20,7 @@ def make_http_container() -> AsyncContainer:
         AuthProvider(),
         RepoProvider(),
         DBProvider(),
+        ConfigProvider(),
     )
 
 

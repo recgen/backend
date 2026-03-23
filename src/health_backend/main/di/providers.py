@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import AsyncIterator
 
@@ -50,7 +51,12 @@ from health_backend.application.recommendation.get import GetPaginatedRecommenda
 from health_backend.domain.doctor.repository import DoctorRepository
 from health_backend.domain.patient.repository import PatientRepository
 from health_backend.domain.recommendation.repository import RecommendationRepository
-from health_backend.main.config import config
+from health_backend.main.config import (
+    APIConfig,
+    JWTConfig,
+    PostgresConfig,
+    YandexCloudConfig,
+)
 
 
 class UseCaseProvider(Provider):
@@ -70,8 +76,8 @@ class UseCaseProvider(Provider):
 
 class DBProvider(Provider):
     @provide(scope=Scope.APP)
-    def get_engine(self) -> AsyncEngine:
-        return create_async_engine(url=config.db_url)
+    def get_engine(self, config: PostgresConfig) -> AsyncEngine:
+        return create_async_engine(url=config.url)
 
     @provide(scope=Scope.APP)
     def get_session_maker(self, engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
@@ -110,12 +116,13 @@ class GeneratorProvider(Provider):
     @provide
     def get_yandex_generator(
         self,
+        config: YandexCloudConfig,
         http_client: HttpClient,
         request_builder: YandexGPTRequestBuilder,
         response_parser: YandexGPTResponseParser,
     ) -> YandexGPTGeneratorService:
         return YandexGPTGeneratorService(
-            api_url=config.yandex_cloud_url,
+            api_url=config.api_url,
             http_client=http_client,
             request_builder=request_builder,
             response_parser=response_parser,
@@ -126,11 +133,11 @@ class GeneratorProvider(Provider):
         return AioHttpClient()
 
     @provide
-    def get_yandex_request_builder(self) -> YandexGPTRequestBuilder:
+    def get_yandex_request_builder(self, config: YandexCloudConfig) -> YandexGPTRequestBuilder:
         return YandexGPTRequestBuilder(
-            folder=config.yandex_cloud_folder,
-            model=config.yandex_cloud_model,
-            api_key=config.yandex_cloud_api_key,
+            folder=config.folder,
+            model=config.model,
+            api_key=config.api_key,
         )
 
     @provide
@@ -144,11 +151,11 @@ class AuthProvider(Provider):
         return ArgonPasswordHasher()
 
     @provide(scope=Scope.APP)
-    def get_access_token_generator(self) -> AccessTokenGenerator:
+    def get_access_token_generator(self, config: JWTConfig) -> AccessTokenGenerator:
         return JWTGenerator(config.secret)
 
     @provide(scope=Scope.APP)
-    def get_jwt_parser(self) -> JWTParser:
+    def get_jwt_parser(self, config: JWTConfig) -> JWTParser:
         return JWTParser(config.secret)
 
     @provide(scope=Scope.REQUEST)
@@ -183,3 +190,38 @@ class AlembicConfigProvider(Provider):
         config = AlembicConfig(file_=ini_file_path)
         config.set_main_option('script_location', scripts_path)
         return config
+
+
+class ConfigProvider(Provider):
+    scope = Scope.APP
+
+    @provide
+    def get_yandex_cloud_config(self) -> YandexCloudConfig:
+        return YandexCloudConfig(
+            api_url=os.getenv('YANDEX_CLOUD_URL'),
+            api_key=os.getenv('YANDEX_CLOUD_API_KEY'),
+            folder=os.getenv('YANDEX_CLOUD_FOLDER'),
+            model=os.getenv('YANDEX_CLOUD_MODEL'),
+        )
+
+    @provide
+    def get_postgres_config(self) -> PostgresConfig:
+        host = os.getenv('DB_HOST')
+        port = os.getenv('DB_PORT')
+        name = os.getenv('DB_NAME')
+        user = os.getenv('DB_USER')
+        password = os.getenv('DB_PASSWORD')
+        url = f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}'
+        return PostgresConfig(url=url)
+
+    @provide
+    def get_jwt_config(self) -> JWTConfig:
+        return JWTConfig(secret=os.getenv('SECRET'))
+
+    @provide
+    def get_api_config(self) -> APIConfig:
+        return APIConfig(
+            host=os.getenv('HOST'),
+            port=int(os.getenv('PORT')),
+            origins=os.getenv('ORIGINS').split(','),
+        )
