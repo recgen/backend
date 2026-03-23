@@ -6,7 +6,7 @@ from fastapi import FastAPI
 
 from health_backend.adapters.persistence.db import start_all_mappings
 from health_backend.main.config import APIConfig
-from health_backend.main.di import make_cli_container, make_http_container
+from health_backend.main.di import make_http_container
 from health_backend.presentation.web_api import v1
 
 
