@@ -27,4 +27,5 @@ def make_http_container() -> AsyncContainer:
 def make_cli_container() -> Container:
     return make_container(
         AlembicConfigProvider(),
+        ConfigProvider(),
     )

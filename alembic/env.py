@@ -8,12 +8,10 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from health_backend.adapters.persistence.db.registry import mapper_registry
-from health_backend.main.config import config
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 alembic_config = context.config
-alembic_config.set_main_option('sqlalchemy.url', config.db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
