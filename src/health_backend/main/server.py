@@ -5,8 +5,8 @@ from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
 from health_backend.adapters.persistence.db import start_all_mappings
-from health_backend.main.config import config
-from health_backend.main.di import make_http_container
+from health_backend.main.config import APIConfig
+from health_backend.main.di import make_cli_container, make_http_container
 from health_backend.presentation.web_api import v1
 
 
@@ -23,7 +23,9 @@ def create_app() -> FastAPI:
     setup_dishka(container, app)
     v1.include_routers(app)
     v1.include_error_handlers(app)
-    v1.add_cors_middleware(app, [config.frontend_origin])
+
+    config = container.get_sync(APIConfig)
+    v1.add_cors_middleware(app, config.origins)
     return app
 
 
