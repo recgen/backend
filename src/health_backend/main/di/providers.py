@@ -198,7 +198,7 @@ class ConfigProvider(Provider):
     @provide
     def get_yandex_cloud_config(self) -> YandexCloudConfig:
         return YandexCloudConfig(
-            api_url=os.getenv('YANDEX_CLOUD_API_URL'),
+            api_url=os.getenv('YANDEX_CLOUD_URL'),
             api_key=os.getenv('YANDEX_CLOUD_API_KEY'),
             folder=os.getenv('YANDEX_CLOUD_FOLDER'),
             model=os.getenv('YANDEX_CLOUD_MODEL'),
