@@ -40,7 +40,7 @@ dev = [
 [tool.ruff]
 line-length = 100
 exclude = [
-  "./alembic",
+  "./src/health_backend/adapters/persistence/db/alembic",
 ]
 
 [tool.ruff.format]
