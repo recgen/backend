@@ -21,6 +21,4 @@ class JWTConfig:
 
 @dataclass
 class APIConfig:
-    host: str
-    port: int
     origins: list[str]

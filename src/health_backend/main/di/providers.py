@@ -221,7 +221,5 @@ class ConfigProvider(Provider):
     @provide
     def get_api_config(self) -> APIConfig:
         return APIConfig(
-            host=os.getenv('HOST'),
-            port=int(os.getenv('PORT')),
             origins=os.getenv('ORIGINS').split(','),
         )
