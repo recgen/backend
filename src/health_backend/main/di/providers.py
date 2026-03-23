@@ -77,7 +77,6 @@ class UseCaseProvider(Provider):
 class DBProvider(Provider):
     @provide(scope=Scope.APP)
     def get_engine(self, config: PostgresConfig) -> AsyncEngine:
-        print(config.url)
         return create_async_engine(url=config.url)
 
     @provide(scope=Scope.APP)
