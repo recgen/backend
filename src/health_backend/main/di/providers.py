@@ -185,8 +185,17 @@ class AlembicConfigProvider(Provider):
 
     @provide
     def provide_alembic_config(self, postgres_config: PostgresConfig) -> AlembicConfig:
-        ini_file_path = str(Path(__file__).parent.parent.parent.parent.parent / 'alembic.ini')
-        scripts_path = str(Path(__file__).parent.parent.parent.parent.parent / 'alembic')
+        ini_file_path = str(
+            Path(__file__).parent.parent.parent
+            / 'adapters'
+            / 'persistence'
+            / 'db'
+            / 'alembic'
+            / 'alembic.ini'
+        )
+        scripts_path = str(
+            Path(__file__).parent.parent.parent / 'adapters' / 'persistence' / 'db' / 'alembic'
+        )
         config = AlembicConfig(file_=ini_file_path)
         config.set_main_option('script_location', scripts_path)
         config.set_main_option('sqlalchemy.url', postgres_config.url)
