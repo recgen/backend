@@ -13,9 +13,9 @@ from health_backend.presentation.web_api.v1.routes import auth, patient, recomme
 
 
 def include_routers(app: FastAPI) -> None:
-    app.include_router(recommendation.router, prefix='/api/v1')
-    app.include_router(auth.router, prefix='/api/v1')
-    app.include_router(patient.router, prefix='/api/v1')
+    app.include_router(recommendation.router, prefix='/api/v1', deprecated=True)
+    app.include_router(auth.router, prefix='/api/v1', deprecated=True)
+    app.include_router(patient.router, prefix='/api/v1', deprecated=True)
 
 
 def include_error_handlers(app: FastAPI) -> None:
