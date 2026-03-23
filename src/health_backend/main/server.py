@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from health_backend.adapters.persistence.db import start_all_mappings
 from health_backend.main.config import APIConfig
 from health_backend.main.di import make_http_container
-from health_backend.presentation.web_api import v1
+from health_backend.presentation.web_api import v1, v2
 
 
 @asynccontextmanager
@@ -20,12 +20,16 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
     container = make_http_container()
+    config = container.get_sync(APIConfig)
+
     setup_dishka(container, app)
     v1.include_routers(app)
     v1.include_error_handlers(app)
-
-    config = container.get_sync(APIConfig)
     v1.add_cors_middleware(app, config.origins)
+
+    v2.include_routers(app)
+    v2.include_error_handlers(app)
+    v2.add_cors_middleware(app, config.origins)
     return app
 
 
