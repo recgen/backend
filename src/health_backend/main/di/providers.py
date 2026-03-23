@@ -77,6 +77,7 @@ class UseCaseProvider(Provider):
 class DBProvider(Provider):
     @provide(scope=Scope.APP)
     def get_engine(self, config: PostgresConfig) -> AsyncEngine:
+        print(config.url)
         return create_async_engine(url=config.url)
 
     @provide(scope=Scope.APP)
@@ -211,7 +212,8 @@ class ConfigProvider(Provider):
         name = os.getenv('DB_NAME')
         user = os.getenv('DB_USER')
         password = os.getenv('DB_PASSWORD')
-        return PostgresConfig(url=f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}')
+        url = f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}'
+        return PostgresConfig(url=url)
 
     @provide
     def get_jwt_config(self) -> JWTConfig:
