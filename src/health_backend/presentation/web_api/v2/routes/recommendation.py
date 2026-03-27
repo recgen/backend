@@ -9,7 +9,7 @@ from health_backend.application.recommendation.dto import (
 from health_backend.application.recommendation.generate import GenerateRecommendationForPatient
 from health_backend.application.recommendation.get import GetPaginatedRecommendationsForPatient
 from health_backend.domain.patient.entity import PatientId
-from health_backend.presentation.web_api.v1.schemas.recommendation import (
+from health_backend.presentation.web_api.v2.schemas.recommendation import (
     GenerateRecommendationRequest,
 )
 
