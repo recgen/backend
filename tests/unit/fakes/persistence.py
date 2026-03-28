@@ -1,3 +1,4 @@
+from health_backend.application.common.committer import Committer
 from health_backend.application.common.errors import EmailAlreadyInUseError
 from health_backend.domain.common.vo import Email
 from health_backend.domain.doctor.entity import Doctor, DoctorId
@@ -21,3 +22,8 @@ class InMemoryDoctorRepository(DoctorRepository):
             if d.email == email:
                 return d
         return None
+
+
+class DummyCommitter(Committer):
+    async def commit(self) -> None:
+        pass

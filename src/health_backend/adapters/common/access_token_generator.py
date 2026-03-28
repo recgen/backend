@@ -26,4 +26,4 @@ class JWTGenerator(AccessTokenGenerator):
             },
             key=self.secret,
         )
-        return AccessToken(token)
+        return AccessToken(token, doctor_id=doctor_id)

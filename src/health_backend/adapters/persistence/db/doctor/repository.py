@@ -18,7 +18,6 @@ class SADoctorRepository(DoctorRepository):
         self.session.add(doctor)
         try:
             await self.session.flush()
-            await self.session.commit()
         except IntegrityError as err:
             # TODO: more concrete
             raise EmailAlreadyInUseError from err

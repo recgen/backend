@@ -8,7 +8,7 @@ from health_backend.domain.doctor.entity import DoctorId
 @dataclass(frozen=True, slots=True)
 class AccessToken:
     value: str
-    doctor_id: DoctorId | None = None
+    doctor_id: DoctorId
 
 
 class AccessTokenGenerator(Protocol):

@@ -11,6 +11,13 @@ from health_backend.domain.patient.repository import PatientRepository
 class SAPatientRepository(PatientRepository):
     session: AsyncSession
 
+    async def add(self, patient: Patient) -> None:
+        self.session.add(patient)
+        await self.session.flush()
+
+    async def update(self, patient: Patient) -> None:
+        self.session.add(patient)
+
     async def get_by_id(self, id: PatientId) -> Patient | None:
         q = select(Patient).where(Patient.id == id)  # ty: ignore[invalid-argument-type]
         return await self.session.scalar(q)
