@@ -1,0 +1,11 @@
+.env
+.env.template
+.github
+.pytest_cache
+.python-version
+.ruff_cache
+.venv
+dev.compose.yaml
+flake.lock
+flake.nix
+tests
