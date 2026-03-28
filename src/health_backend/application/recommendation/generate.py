@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from health_backend.application.common.committer import Committer
-from health_backend.application.common.errors import NotFoundError, UnauthorizedError
+from health_backend.application.common.errors import NotFoundError
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.recommendation.dto import (
     GenerateRecommendationForPatientResponse,
@@ -29,9 +29,7 @@ class GenerateRecommendationForPatient:
     async def execute(
         self, patient_id: PatientId, patient_history: str
     ) -> GenerateRecommendationForPatientResponse:
-        doctor_id = self.idp.get_id()
-        if doctor_id is None:
-            raise UnauthorizedError
+        self.idp.require_auth()
 
         patient_history_vo = PatientHistory(patient_history)
         patient = await self.patient_repo.get_by_id(patient_id)
