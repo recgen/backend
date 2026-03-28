@@ -12,6 +12,10 @@ from health_backend.domain.recommendation.repository import RecommendationReposi
 class SARecommendationRepository(RecommendationRepository):
     session: AsyncSession
 
+    async def add(self, recommendation: Recommendation) -> None:
+        self.session.add(recommendation)
+        await self.session.flush()
+
     async def get_paginated(
         self, patient_id: PatientId, page: int, size: int
     ) -> tuple[list[Recommendation], int]:
