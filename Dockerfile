@@ -23,4 +23,4 @@ USER $USER
 
 ENV UV_NO_SYNC=1
 
-CMD uv run health run server --host 0.0.0.0 --port 8000
+CMD ["uv", "run", "health", "run", "server", "--host", "0.0.0.0", "--port", "8000"]
