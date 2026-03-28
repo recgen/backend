@@ -6,6 +6,12 @@ from health_backend.domain.patient.entity import Patient, PatientId
 
 class PatientRepository(Protocol):
     @abstractmethod
+    async def add(self, patient: Patient) -> None: ...
+
+    @abstractmethod
+    async def update(self, patient: Patient) -> None: ...
+
+    @abstractmethod
     async def get_by_id(self, id: PatientId) -> Patient | None: ...
 
     @abstractmethod

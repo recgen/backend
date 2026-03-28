@@ -34,10 +34,9 @@ from health_backend.adapters.recommendation.generator.yandex.service import (
 from health_backend.application.common.access_token_generator import AccessTokenGenerator
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.common.password_hasher import PasswordHasher
-from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.doctor.get_me import GetMe
 from health_backend.application.doctor.login import DoctorLogin
-from health_backend.application.doctor.signup import DoctorSignup
+from health_backend.application.doctor.signup import Committer, DoctorSignup
 from health_backend.application.patient.create import CreatePatient
 from health_backend.application.patient.delete import DeletePatient
 from health_backend.application.patient.get import GetPaginatedPatients, GetPatient
@@ -97,7 +96,7 @@ class DBProvider(Provider):
             await session.close()
 
     @provide(scope=Scope.REQUEST)
-    async def get_uow(self, session: AsyncSession) -> UnitOfWork:
+    async def get_committer(self, session: AsyncSession) -> Committer:
         return session
 
 

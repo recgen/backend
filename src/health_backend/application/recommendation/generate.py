@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
+from health_backend.application.common.committer import Committer
 from health_backend.application.common.errors import NotFoundError, UnauthorizedError
 from health_backend.application.common.idp import DoctorIdProvider
-from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.recommendation.dto import (
     GenerateRecommendationForPatientResponse,
     RecommendationDTO,
@@ -14,6 +14,7 @@ from health_backend.domain.patient.entity import PatientId
 from health_backend.domain.patient.repository import PatientRepository
 from health_backend.domain.patient.vo import PatientHistory
 from health_backend.domain.recommendation.entity import Recommendation
+from health_backend.domain.recommendation.repository import RecommendationRepository
 from health_backend.domain.recommendation.vo import Thresholds
 
 
@@ -21,8 +22,9 @@ from health_backend.domain.recommendation.vo import Thresholds
 class GenerateRecommendationForPatient:
     generator: ThresholdsGenerator
     patient_repo: PatientRepository
+    recommendation_repo: RecommendationRepository
     idp: DoctorIdProvider
-    uow: UnitOfWork
+    committer: Committer
 
     async def execute(
         self, patient_id: PatientId, patient_history: str
@@ -30,13 +32,17 @@ class GenerateRecommendationForPatient:
         doctor_id = self.idp.get_id()
         if doctor_id is None:
             raise UnauthorizedError
+
         patient_history_vo = PatientHistory(patient_history)
         patient = await self.patient_repo.get_by_id(patient_id)
+
         if patient is None:
             raise NotFoundError
         if patient.is_active is False:
             raise InactiveError
+
         thresholds_dto = await self.generator.generate(patient_history)
+
         recommendation = Recommendation.create(
             patient_id,
             patient_history_vo,
@@ -55,8 +61,10 @@ class GenerateRecommendationForPatient:
                 ),
             ),
         )
-        self.uow.add(recommendation)
-        await self.uow.commit()
+
+        await self.recommendation_repo.add(recommendation)
+        await self.committer.commit()
+
         return GenerateRecommendationForPatientResponse(
             recommendation=RecommendationDTO(
                 id=recommendation.id,

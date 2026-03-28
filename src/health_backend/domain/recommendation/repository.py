@@ -10,3 +10,6 @@ class RecommendationRepository(Protocol):
     async def get_paginated(
         self, patient_id: PatientId, page: int, size: int
     ) -> tuple[list[Recommendation], int]: ...
+
+    @abstractmethod
+    async def add(self, recommendation: Recommendation) -> None: ...

@@ -38,7 +38,13 @@ class JWTIdProvider(DoctorIdProvider):
     token: str | None
     _parsed_token: AccessToken | None = None
 
-    def get_id(self) -> DoctorId | None:
+    def get_id(self) -> DoctorId:
+        return self._ensure_token().doctor_id
+
+    def require_auth(self) -> None:
+        self._ensure_token()
+
+    def _ensure_token(self) -> AccessToken:
         if self._parsed_token is None:
             self._parsed_token = self.parser.parse(self.token)
-        return self._parsed_token.doctor_id
+        return self._parsed_token

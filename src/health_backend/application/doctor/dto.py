@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import Self
-from uuid import UUID
 
-from health_backend.domain.doctor.entity import Doctor
+from health_backend.domain.doctor.entity import Doctor, DoctorId
 
 
 @dataclass(frozen=True, slots=True)
@@ -14,7 +13,7 @@ class DoctorSignupRequest:
 
 @dataclass(frozen=True, slots=True)
 class DoctorDTO:
-    id: UUID
+    id: DoctorId
     name: str
     email: str
 
