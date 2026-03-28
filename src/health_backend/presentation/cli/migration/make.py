@@ -12,4 +12,4 @@ from dishka.integrations.click import inject
 def make_migration(
     message: str | None, autogenerate: bool, config: FromDishka[AlembicConfig]
 ) -> None:
-    revision(config=config, message=message, autogenerate=True)
+    revision(config=config, message=message, autogenerate=autogenerate)

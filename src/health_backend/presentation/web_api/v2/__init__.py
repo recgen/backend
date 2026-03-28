@@ -26,7 +26,7 @@ def include_error_handlers(app: FastAPI) -> None:
 
 def add_cors_middleware(app: FastAPI, origins: list[str]) -> None:
     app.add_middleware(
-        CORSMiddleware,  # ty: ignore
+        CORSMiddleware,
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=['*'],

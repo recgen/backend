@@ -3,9 +3,8 @@ from dataclasses import dataclass
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.operators import eq
 
-from health_backend.application.common.errors import EmailAlreadyInUse
+from health_backend.application.common.errors import EmailAlreadyInUseError
 from health_backend.domain.common.vo import Email
 from health_backend.domain.doctor.entity import Doctor, DoctorId
 from health_backend.domain.doctor.repository import DoctorRepository
@@ -20,9 +19,9 @@ class SADoctorRepository(DoctorRepository):
         try:
             await self.session.flush()
             await self.session.commit()
-        except IntegrityError as e:
+        except IntegrityError as err:
             # TODO: more concrete
-            raise EmailAlreadyInUse
+            raise EmailAlreadyInUseError from err
 
     async def get_by_id(self, doctor_id: DoctorId) -> Doctor | None:
         q = select(Doctor).where(Doctor.id == doctor_id)  # ty: ignore[invalid-argument-type]

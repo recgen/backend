@@ -48,9 +48,27 @@ quote-style = "single"
 indent-style = "space"
 
 [tool.ruff.lint]
-select = [
-  "E",
-  "I",
+select = ["ALL"]
+ignore = [
+    "A002", # Function argument `id` is shadowing a Python builtin
+    "D",
+    "TC001",
+    "TC002",
+    "TC003",
+    "TC006",
+    "Q000",
+    "Q003",
+    "COM812",
+    "EM101",
+    "S106", # Possible hardcoded password assigned to argument: "password"
+    "RET504",
+    "S101", # Use of `assert` detected
+    "FBT001", # Boolean positional arg in function definition
+    "RUF001", # String contains ambiguous `е` (CYRILLIC SMALL LETTER IE). Did you mean `e` (LATIN SMALL LETTER E)?
+    "FIX002", # Line contains TODO, consider resolving the issue
+    "TD002", # Missing author in TODO; try: `# TODO(<author_name>): ...` or `# TODO @<author_name>: ...`
+    "TD003", # Missing issue link on the line following this TODO
+    "ANN401",
 ]
 
 [tool.ty.src]

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -7,25 +7,25 @@ from pydantic.alias_generators import to_snake
 from health_backend.adapters.common.errors import InfrastructureError, LLMError
 from health_backend.application.common.errors import (
     ApplicationError,
-    EmailAlreadyInUse,
-    NotFound,
-    Unauthorized,
+    EmailAlreadyInUseError,
+    NotFoundError,
+    UnauthorizedError,
 )
 from health_backend.domain.common.errors import (
     DomainError,
-    EmptyPatientHistory,
-    Inactive,
-    InvalidEmail,
+    EmptyPatientHistoryError,
+    InactiveError,
+    InvalidEmailError,
 )
 
-error_to_http_code = {
-    EmptyPatientHistory: 422,
+error_to_http_code: dict[type[Exception], int] = {
+    EmptyPatientHistoryError: 422,
     LLMError: 422,
-    EmailAlreadyInUse: 409,
-    Unauthorized: 401,
-    NotFound: 404,
-    Inactive: 403,
-    InvalidEmail: 422,
+    EmailAlreadyInUseError: 409,
+    UnauthorizedError: 401,
+    NotFoundError: 404,
+    InactiveError: 403,
+    InvalidEmailError: 422,
 }
 
 
@@ -36,11 +36,11 @@ def construct_body(err: Exception) -> dict[str, Any]:
 
 
 def get_http_code_for(err: Exception) -> int:
-    return error_to_http_code[err.__class__]
+    return error_to_http_code.get(type(err), 500)
 
 
-def domain_error_handler(request: Request, err: Exception) -> JSONResponse:
-    assert isinstance(err, DomainError)
+def domain_error_handler(_request: Request, err: Exception) -> JSONResponse:
+    cast(DomainError, err)
     body = construct_body(err)
     return JSONResponse(
         body,
@@ -48,8 +48,8 @@ def domain_error_handler(request: Request, err: Exception) -> JSONResponse:
     )
 
 
-def infrastructure_error_handler(request: Request, err: Exception) -> JSONResponse:
-    assert isinstance(err, InfrastructureError)
+def infrastructure_error_handler(_request: Request, err: Exception) -> JSONResponse:
+    cast(InfrastructureError, err)
     body = construct_body(err)
     if isinstance(err, LLMError):
         body = {
@@ -62,8 +62,8 @@ def infrastructure_error_handler(request: Request, err: Exception) -> JSONRespon
     )
 
 
-def application_error_handler(request: Request, err: Exception) -> JSONResponse:
-    assert isinstance(err, ApplicationError)
+def application_error_handler(_request: Request, err: Exception) -> JSONResponse:
+    cast(ApplicationError, err)
     body = construct_body(err)
     return JSONResponse(
         body,

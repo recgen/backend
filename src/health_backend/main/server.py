@@ -1,6 +1,6 @@
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-import uvicorn
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
@@ -11,7 +11,7 @@ from health_backend.presentation.web_api import v2
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     start_all_mappings()
     yield
     await app.state.dishka_container.close()

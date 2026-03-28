@@ -4,7 +4,7 @@ from uuid import UUID
 import jwt
 
 from health_backend.application.common.access_token_generator import AccessToken
-from health_backend.application.common.errors import Unauthorized
+from health_backend.application.common.errors import UnauthorizedError
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.domain.doctor.entity import DoctorId
 
@@ -17,15 +17,15 @@ class JWTParser:
 
     def parse(self, token: str | None) -> AccessToken:
         if token is None:
-            raise Unauthorized
+            raise UnauthorizedError
         try:
             payload = jwt.decode(token, key=self.secret, algorithms=[algorithm])
-        except jwt.PyJWTError as e:
-            raise Unauthorized from e
+        except jwt.PyJWTError as err:
+            raise UnauthorizedError from err
         try:
             doctor_id = DoctorId(UUID(payload['sub']))
-        except KeyError:
-            raise Unauthorized
+        except KeyError as err:
+            raise UnauthorizedError from err
         return AccessToken(
             value=token,
             doctor_id=doctor_id,

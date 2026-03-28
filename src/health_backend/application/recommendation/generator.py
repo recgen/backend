@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from health_backend.application.recommendation.dto import RecommendationDTO, ThresholdsDTO
+from health_backend.application.recommendation.dto import ThresholdsDTO
 
 
 class GeneratorService(Protocol):

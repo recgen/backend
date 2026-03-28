@@ -1,6 +1,5 @@
 from sqlalchemy import Boolean, Column, DateTime, Enum, Table
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.types import String
 
 from health_backend.adapters.persistence.db.common.types import NameType
 from health_backend.adapters.persistence.db.registry import mapper_registry

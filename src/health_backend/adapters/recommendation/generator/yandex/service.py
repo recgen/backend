@@ -1,6 +1,4 @@
-import json
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 from health_backend.adapters.common.http.client import HttpClient
 from health_backend.adapters.recommendation.generator.common.request_builder import RequestBuilder

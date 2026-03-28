@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from health_backend.application.common.errors import Unauthorized
+from health_backend.application.common.errors import UnauthorizedError
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.common.uow import UnitOfWork
 from health_backend.application.patient.dto import CreatePatientRequest, CreatePatientResponse
@@ -15,7 +15,7 @@ class CreatePatient:
     async def execute(self, request: CreatePatientRequest) -> CreatePatientResponse:
         doctor_id = self.idp.get_id()
         if doctor_id is None:
-            raise Unauthorized
+            raise UnauthorizedError
         patient = Patient.create(
             name=request.name,
             birth_date=request.birth_date,

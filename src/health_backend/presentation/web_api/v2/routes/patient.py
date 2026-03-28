@@ -8,9 +8,8 @@ from health_backend.application.patient.dto import (
     CreatePatientRequest,
     CreatePatientResponse,
     PaginatedPatientsResponse,
-    PatientDTO,
 )
-from health_backend.application.patient.get import GetPaginatedPatients, GetPatient
+from health_backend.application.patient.get import GetPaginatedPatients
 from health_backend.domain.patient.entity import PatientId
 
 router = APIRouter(

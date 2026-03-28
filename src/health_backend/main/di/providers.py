@@ -1,6 +1,6 @@
 import os
+from collections.abc import AsyncIterator
 from pathlib import Path
-from typing import AsyncIterator
 
 from alembic.config import Config as AlembicConfig
 from dishka import Provider, Scope, provide, provide_all
@@ -22,7 +22,6 @@ from health_backend.adapters.persistence.db.patient.repository import SAPatientR
 from health_backend.adapters.persistence.db.recommendation.repository import (
     SARecommendationRepository,
 )
-from health_backend.adapters.persistence.in_memory.doctor.repository import InMemoryDoctorRepository
 from health_backend.adapters.recommendation.generator.yandex.request_builder import (
     YandexGPTRequestBuilder,
 )

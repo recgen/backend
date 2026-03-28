@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import argon2
 from argon2.exceptions import VerifyMismatchError
 

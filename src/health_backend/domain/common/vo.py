@@ -4,7 +4,7 @@ from decimal import Decimal
 from enum import StrEnum
 from typing import Self
 
-from health_backend.domain.common.errors import EmptyName, InvalidEmail
+from health_backend.domain.common.errors import EmptyNameError, InvalidEmailError
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,7 +26,7 @@ class Name:
 
     def __post_init__(self) -> None:
         if len(self.value) == 0:
-            raise EmptyName
+            raise EmptyNameError
 
 
 EMAIL_REGEX = re.compile(
@@ -44,7 +44,7 @@ class Email:
 
     def __post_init__(self) -> None:
         if not EMAIL_REGEX.match(self.value):
-            raise InvalidEmail
+            raise InvalidEmailError
 
 
 class Gender(StrEnum):

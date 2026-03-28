@@ -1,7 +1,8 @@
 import json
 from decimal import Decimal
+from typing import Any
 
-from sqlalchemy import Column, ForeignKey, String, Table, Text
+from sqlalchemy import Column, Dialect, ForeignKey, String, Table, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import TypeDecorator
 
@@ -16,12 +17,16 @@ class PatientHistoryType(TypeDecorator):
     impl = Text
     cache_ok = True
 
-    def process_bind_param(self, patient_history: PatientHistory | None, dialect) -> str | None:
-        if patient_history is not None:
-            return patient_history.value
+    def process_bind_param(
+        self,
+        value: PatientHistory | None,
+        dialect: Dialect,  # noqa: ARG002
+    ) -> Any:
+        if value is not None:
+            return value.value
         return None
 
-    def process_result_value(self, value: str | None, dialect) -> PatientHistory | None:
+    def process_result_value(self, value: str | None, dialect: Dialect) -> PatientHistory | None:  # noqa: ARG002
         if value is not None:
             return PatientHistory(value)
         return None
@@ -31,27 +36,27 @@ class ThresholdsType(TypeDecorator):
     impl = String
     cache_ok = True
 
-    def process_bind_param(self, thresholds: Thresholds | None, dialect) -> str | None:
-        if thresholds is None:
+    def process_bind_param(self, value: Thresholds | None, dialect: Dialect) -> Any:  # noqa: ARG002
+        if value is None:
             return None
         return json.dumps(
             {
                 'systolic_blood_pressure': {
-                    'minimum': str(thresholds.systolic_blood_pressure.minimum),
-                    'maximum': str(thresholds.systolic_blood_pressure.maximum),
+                    'minimum': str(value.systolic_blood_pressure.minimum),
+                    'maximum': str(value.systolic_blood_pressure.maximum),
                 },
                 'diastolic_blood_pressure': {
-                    'minimum': str(thresholds.diastolic_blood_pressure.minimum),
-                    'maximum': str(thresholds.diastolic_blood_pressure.maximum),
+                    'minimum': str(value.diastolic_blood_pressure.minimum),
+                    'maximum': str(value.diastolic_blood_pressure.maximum),
                 },
                 'temperature_celsius': {
-                    'minimum': str(thresholds.temperature_celsius.minimum),
-                    'maximum': str(thresholds.temperature_celsius.maximum),
+                    'minimum': str(value.temperature_celsius.minimum),
+                    'maximum': str(value.temperature_celsius.maximum),
                 },
             }
         )
 
-    def process_result_value(self, value: str | None, dialect) -> Thresholds | None:
+    def process_result_value(self, value: str | None, dialect: Dialect) -> Any:  # noqa: ARG002
         if value is None:
             return None
         data = json.loads(value)

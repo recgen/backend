@@ -1,18 +1,16 @@
-from dataclasses import dataclass, field
-
-from health_backend.application.common.errors import EmailAlreadyInUse
+from health_backend.application.common.errors import EmailAlreadyInUseError
 from health_backend.domain.common.vo import Email
 from health_backend.domain.doctor.entity import Doctor, DoctorId
 from health_backend.domain.doctor.repository import DoctorRepository
 
 
-@dataclass(frozen=True, slots=True)
 class InMemoryDoctorRepository(DoctorRepository):
-    doctors: dict[DoctorId, Doctor] = field(default_factory=dict)
+    def __init__(self) -> None:
+        self.doctors: dict[DoctorId, Doctor] = {}
 
     async def add(self, doctor: Doctor) -> None:
         if any(d.email == doctor.email for d in self.doctors.values()):
-            raise EmailAlreadyInUse
+            raise EmailAlreadyInUseError
         self.doctors[doctor.id] = doctor
 
     async def get_by_id(self, doctor_id: DoctorId) -> Doctor | None:

@@ -1,9 +1,8 @@
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Response
 
 from health_backend.application.doctor.dto import (
-    DoctorAuthResponse,
     DoctorDTO,
     DoctorLoginRequest,
     DoctorSignupRequest,
