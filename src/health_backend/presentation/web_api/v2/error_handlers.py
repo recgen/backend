@@ -14,6 +14,7 @@ from health_backend.application.common.errors import (
 from health_backend.domain.common.errors import (
     DomainError,
     EmptyPatientHistoryError,
+    FutureDateError,
     InactiveError,
     InvalidEmailError,
 )
@@ -26,6 +27,7 @@ error_to_http_code: dict[type[Exception], int] = {
     NotFoundError: 404,
     InactiveError: 403,
     InvalidEmailError: 422,
+    FutureDateError: 422,
 }
 
 

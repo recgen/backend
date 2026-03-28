@@ -1,6 +1,8 @@
-from sqlalchemy import Dialect, String, TypeDecorator
+from datetime import UTC, datetime
 
-from health_backend.domain.common.vo import Email, Name
+from sqlalchemy import DateTime, Dialect, String, TypeDecorator
+
+from health_backend.domain.common.vo import Email, Name, NonFutureDate
 
 
 class NameType(TypeDecorator):
@@ -30,4 +32,23 @@ class EmailType(TypeDecorator):
     def process_result_value(self, value: str | None, dialect: Dialect) -> Email | None:  # noqa: ARG002
         if value is not None:
             return Email(value)
+        return None
+
+
+class NonFutureDateType(TypeDecorator):
+    impl = DateTime
+    cache_ok = True
+
+    def process_bind_param(self, value: NonFutureDate | None, dialect: Dialect) -> datetime | None:  # noqa: ARG002
+        if value is not None:
+            return value.value.astimezone(UTC).replace(tzinfo=None)
+        return None
+
+    def process_result_value(
+        self,
+        value: datetime | None,
+        dialect: Dialect,  # noqa: ARG002
+    ) -> NonFutureDate | None:
+        if value is not None:
+            return NonFutureDate(value.astimezone(UTC))
         return None

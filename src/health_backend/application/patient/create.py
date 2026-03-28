@@ -21,6 +21,7 @@ class CreatePatient:
             birth_date=request.birth_date,
             gender=request.gender,
         )
+        assert self.patient_repo is not None
         await self.patient_repo.add(patient)
         await self.committer.commit()
 

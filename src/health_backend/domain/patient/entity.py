@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import NewType, Self
 from uuid import UUID, uuid4
 
-from health_backend.domain.common.vo import Gender, Name
+from health_backend.domain.common.vo import Gender, Name, NonFutureDate
 
 PatientId = NewType('PatientId', UUID)
 
@@ -12,7 +12,7 @@ PatientId = NewType('PatientId', UUID)
 class Patient:
     id: PatientId
     name: Name
-    birth_date: datetime
+    birth_date: NonFutureDate
     gender: Gender
     is_active: bool
 
@@ -26,7 +26,7 @@ class Patient:
         return cls(
             id=PatientId(uuid4()),
             name=Name(name),
-            birth_date=birth_date,
+            birth_date=NonFutureDate(birth_date),
             gender=Gender(gender),
             is_active=True,
         )

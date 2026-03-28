@@ -4,7 +4,7 @@ from typing import Self
 from uuid import UUID
 
 from health_backend.domain.common.vo import Gender
-from health_backend.domain.patient.entity import Patient
+from health_backend.domain.patient.entity import Patient, PatientId
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,7 +16,7 @@ class CreatePatientRequest:
 
 @dataclass(frozen=True, slots=True)
 class CreatePatientResponse:
-    id: UUID
+    id: PatientId
     name: str
     gender: Gender
     birth_date: datetime
@@ -27,7 +27,7 @@ class CreatePatientResponse:
             id=patient.id,
             name=patient.name.value,
             gender=patient.gender,
-            birth_date=patient.birth_date,
+            birth_date=patient.birth_date.value,
         )
 
 
@@ -44,7 +44,7 @@ class PatientDTO:
             id=patient.id,
             name=patient.name.value,
             gender=patient.gender,
-            birth_date=patient.birth_date,
+            birth_date=patient.birth_date.value,
         )
 
 

@@ -1,10 +1,11 @@
 import re
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from decimal import Decimal
 from enum import StrEnum
 from typing import Self
 
-from health_backend.domain.common.errors import EmptyNameError, InvalidEmailError
+from health_backend.domain.common.errors import EmptyNameError, FutureDateError, InvalidEmailError
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,3 +51,12 @@ class Email:
 class Gender(StrEnum):
     MALE = 'MALE'
     FEMALE = 'FEMALE'
+
+
+@dataclass(frozen=True, slots=True)
+class NonFutureDate:
+    value: datetime
+
+    def __post_init__(self) -> None:
+        if self.value.astimezone(tz=UTC) > datetime.now(tz=UTC):
+            raise FutureDateError
