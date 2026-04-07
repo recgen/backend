@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from health_backend.adapters.persistence.db import start_all_mappings
 from health_backend.main.config import APIConfig
@@ -27,6 +28,8 @@ def create_app() -> FastAPI:
     v2.include_routers(app)
     v2.include_error_handlers(app)
     v2.add_cors_middleware(app, config.origins)
+
+    Instrumentator().instrument(app).expose(app)
     return app
 
 
