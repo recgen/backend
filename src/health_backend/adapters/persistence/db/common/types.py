@@ -1,6 +1,8 @@
 from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, Dialect, String, TypeDecorator
+from sqlalchemy.sql import operators
+from sqlalchemy.sql.operators import OperatorType
 
 from health_backend.domain.common.vo import Email, Name, NonFutureDate
 
@@ -18,6 +20,11 @@ class NameType(TypeDecorator):
         if value is not None:
             return Name(value)
         return None
+
+    def coerce_compared_value(self, op: OperatorType | None, value: NameType) -> String | NameType:  # noqa: ARG002
+        if op in (operators.like_op, operators.ilike_op):
+            return String()
+        return self
 
 
 class EmailType(TypeDecorator):

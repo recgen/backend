@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from health_backend.application.common.errors import NotFoundError
 from health_backend.application.common.idp import DoctorIdProvider
 from health_backend.application.patient.dto import PaginatedPatientsResponse, PatientDTO
+from health_backend.domain.common.vo import Name
 from health_backend.domain.patient.entity import PatientId
 from health_backend.domain.patient.repository import PatientRepository
 
@@ -27,10 +28,19 @@ class GetPaginatedPatients:
     idp: DoctorIdProvider
     repo: PatientRepository
 
-    async def execute(self, page: int, size: int) -> PaginatedPatientsResponse:
+    async def execute(
+        self,
+        name_like: str | None,
+        page: int,
+        size: int,
+    ) -> PaginatedPatientsResponse:
         self.idp.require_auth()
 
-        patients, total = await self.repo.get_active_paginated(page, size)
+        patients, total = await self.repo.get_active_paginated(
+            Name(name_like) if name_like is not None else None,
+            page,
+            size,
+        )
 
         return PaginatedPatientsResponse(
             patients=[PatientDTO.from_entity(p) for p in patients],

@@ -29,10 +29,11 @@ async def create_patient(
 @router.get('')
 async def get_paginated(
     use_case: FromDishka[GetPaginatedPatients],
+    name_like: str | None = None,
     page: int = 1,
     size: int = 20,
 ) -> PaginatedPatientsResponse:
-    return await use_case.execute(page, size)
+    return await use_case.execute(name_like, page, size)
 
 
 @router.delete('/{id}', status_code=204)
